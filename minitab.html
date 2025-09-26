@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MiniTab</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="minitab.css">
+</head>
+<body>
+  <header>
+    <h1>MiniTab</h1>
+    <input type="text" id="search" placeholder="Search tabs..." aria-label="Search tabs">
+    <button id="export">Export</button>
+    <button id="import">Import</button>
+    <button id="share">Share</button>
+    <button id="settings">Settings</button>
+  </header>
+  <main id="groups"></main>
+  <div id="welcome" style="display: none;">
+    <p>Welcome to MiniTab! Click the extension icon or use Ctrl+Shift+M to collect tabs. Organize sessions, search, and restore as needed.</p>
+  </div>
+  <div id="settings-modal" style="display: none;">
+    <h2>Settings</h2>
+    <label>Theme:
+      <select id="theme-select">
+        <option value="auto">Auto (System)</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+    </label>
+    <p>Keyboard shortcuts can be customized in chrome://extensions/shortcuts.</p>
+    <p><a href="privacy.html" target="_blank">Privacy Policy</a></p>
+    <button id="close-settings">Close</button>
+  </div>
+  <input type="file" id="import-file" style="display: none;" accept=".txt">
+  <script src="minitab.js"></script>
+</body>
+</html>

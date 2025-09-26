@@ -1,0 +1,166 @@
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 20px;
+  background: #ffffff;
+  color: #000000;
+  min-width: 600px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+body.dark {
+  background: #121212;
+  color: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  body.auto {
+    background: #121212;
+    color: #ffffff;
+  }
+}
+
+header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+
+h1 {
+  font-size: 2em;
+  font-weight: 700;
+  margin: 0;
+  flex: 1;
+}
+
+#search {
+  flex: 2;
+  padding: 8px;
+  font-size: 1em;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+body.dark #search, body.auto #search {
+  border-color: #444;
+  background: #222;
+  color: #fff;
+}
+
+button {
+  padding: 8px 12px;
+  font-size: 1em;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+body.dark button, body.auto button {
+  background: #333;
+  border-color: #555;
+  color: #fff;
+}
+
+.group {
+  margin-bottom: 30px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+body.dark .group, body.auto .group {
+  border-color: #333;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.group-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.group-name {
+  font-size: 1.5em;
+  font-weight: 600;
+  margin: 0;
+  flex: 1;
+}
+
+.tab-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tab-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+body.dark .tab-item, body.auto .tab-item {
+  border-bottom: 1px solid #333;
+}
+
+.tab-item:hover {
+  background: #f9f9f9;
+}
+
+body.dark .tab-item:hover, body.auto .tab-item:hover {
+  background: #1e1e1e;
+}
+
+.tab-item a {
+  flex: 1;
+  color: inherit;
+  text-decoration: none;
+}
+
+.drag-handle {
+  cursor: grab;
+  margin-right: 10px;
+  user-select: none;
+}
+
+.tab-item.dragging {
+  opacity: 0.5;
+}
+
+#welcome {
+  text-align: center;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+body.dark #welcome, body.auto #welcome {
+  border-color: #444;
+}
+
+#settings-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  z-index: 1000;
+}
+
+body.dark #settings-modal, body.auto #settings-modal {
+  background: #222;
+}
+
+#settings-modal select {
+  margin-left: 10px;
+}

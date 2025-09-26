@@ -70,7 +70,7 @@ async function loadGroups(filter = '') {
 
     group.tabs
       .filter(tab => !filter || tab.title.toLowerCase().includes(filter) || tab.url.toLowerCase().includes(filter))
-      .forEach(tab => {
+      .forEach((tab, index) => {
         const li = document.createElement('li');
         li.className = 'tab-item';
         li.dataset.url = tab.url;
@@ -94,7 +94,13 @@ async function loadGroups(filter = '') {
         a.addEventListener('mousemove', (ev) => showPreview(ev, tab));
         a.addEventListener('mouseleave', hidePreview);
 
-        li.append(favicon, a);
+        const del = document.createElement('button');
+        del.className = 'tab-delete';
+        del.setAttribute('aria-label', 'Delete saved tab');
+        del.textContent = '×';
+        del.addEventListener('click', (e) => deleteTab(e, group.id, index));
+
+        li.append(favicon, a, del);
         ul.append(li);
       });
 
@@ -265,6 +271,17 @@ function showPreview(ev, tab) {
   const y = Math.min(window.innerHeight - previewEl.offsetHeight - pad, ev.clientY + 18);
   previewEl.style.left = `${Math.max(pad, x)}px`;
   previewEl.style.top = `${Math.max(pad, y)}px`;
+}
+
+async function deleteTab(e, groupId, tabIndex) {
+  e.stopPropagation();
+  e.preventDefault();
+  const { groups = [] } = await chrome.storage.local.get('groups');
+  const group = groups.find(g => g.id == groupId);
+  if (!group) return;
+  group.tabs.splice(tabIndex, 1);
+  await chrome.storage.local.set({ groups });
+  await loadGroups(document.getElementById('search').value.toLowerCase());
 }
 
 function hidePreview() {

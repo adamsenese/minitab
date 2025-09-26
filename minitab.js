@@ -217,8 +217,8 @@ function setupEventListeners() {
 
   document.getElementById('share').addEventListener('click', async () => {
     const { groups = [] } = await chrome.storage.local.get('groups');
-    const html = `<!DOCTYPE html><html><body>${groups.map(g => `<h2>${g.name}</h2><ul>${g.tabs.map(t => `<li><a href=\"${t.url}\">${t.title || t.url}</a></li>`).join('')}</ul>`).join('')}</body></html>`;
-    const blob = new Blob([html], { type: 'text/html' });
+    const html = buildShareHtml(groups);
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     await chrome.tabs.create({ url });
   });
@@ -325,4 +325,37 @@ async function copyLink(e, url) {
     try { document.execCommand('copy'); } catch (_) {}
     document.body.removeChild(ta);
   }
+}
+
+function buildShareHtml(groups) {
+  const totalLinks = groups.reduce((sum, g) => sum + (g.tabs?.length || 0), 0);
+  const head = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>MiniTab Share (${totalLinks} link${totalLinks===1?'':'s'})</title><style>
+  body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:24px;line-height:1.5}
+  h1{margin:0 0 16px 0;font-size:22px}
+  h2{margin:20px 0 8px 0;font-size:18px}
+  .meta{color:#666;font-size:13px;margin-bottom:16px}
+  ul{list-style:none;padding:0;margin:0 0 20px 0}
+  li{display:flex;align-items:center;padding:8px 0;border-bottom:1px solid #eee}
+  li:last-child{border-bottom:none}
+  a{color:#0a5; text-decoration:none}
+  a:hover{text-decoration:underline}
+  .fav{width:16px;height:16px;border-radius:2px;margin-right:8px}
+  @media (prefers-color-scheme: dark){body{background:#121212;color:#fff}.meta{color:#aaa}li{border-bottom:1px solid #333}}
+  </style></head><body>`;
+  const header = `<h1>MiniTab Share</h1><div class="meta">${groups.length} session${groups.length===1?'':'s'} • ${totalLinks} link${totalLinks===1?'':'s'}</div>`;
+  const body = groups.map(g => {
+    const safeName = escapeHtml(g.name || 'Session');
+    const items = (g.tabs || []).map(t => {
+      const url = t.url || '';
+      const safeUrl = escapeHtml(url);
+      const safeTitle = escapeHtml(t.title || url);
+      let host = '';
+      try { host = new URL(url).hostname; } catch(_) {}
+      const fav = (()=>{try{const u=new URL(url);return `https://www.google.com/s2/favicons?domain=${u.hostname}&sz=64`;}catch(_){return `https://www.google.com/s2/favicons?domain=${safeUrl}&sz=64`;}})();
+      return `<li><img class="fav" src="${fav}" alt=""><a href="${safeUrl}" target="_blank" rel="noopener noreferrer" title="${safeUrl}">${safeTitle}</a></li>`;
+    }).join('');
+    return `<section><h2>${safeName}</h2><ul>${items}</ul></section>`;
+  }).join('');
+  const foot = `</body></html>`;
+  return head + header + body + foot;
 }

@@ -17,9 +17,12 @@ async function collectTabs() {
   if (tabData.length === 0) return;
 
   const { groups = [] } = await chrome.storage.local.get('groups');
+  const now = new Date();
+  const ts = now.toLocaleString();
+  const count = tabData.length;
   const newGroup = {
     id: Date.now(),
-    name: `Session ${groups.length + 1}`,
+    name: `${ts} • ${count} tab${count === 1 ? '' : 's'}`,
     tabs: tabData,
     locked: false,
     starred: false

@@ -75,87 +75,37 @@ async function loadGroups(filter = '') {
         li.className = 'tab-item';
         li.dataset.url = tab.url;
         li.setAttribute('role', 'listitem');
-        li.setAttribute('draggable', 'true');
 
-        const dragHandle = document.createElement('span');
-        dragHandle.className = 'drag-handle';
-        dragHandle.textContent = '☰';
-        dragHandle.setAttribute('aria-hidden', 'true');
+        const favicon = document.createElement('img');
+        favicon.className = 'tab-favicon';
+        favicon.alt = '';
+        favicon.referrerPolicy = 'no-referrer';
+        try {
+          const u = new URL(tab.url);
+          favicon.src = `https://www.google.com/s2/favicons?domain=${u.hostname}&sz=64`;
+        } catch (_) {
+          favicon.src = `https://www.google.com/s2/favicons?domain=${tab.url}&sz=64`;
+        }
 
         const a = document.createElement('a');
         a.href = tab.url;
         a.textContent = tab.title || tab.url;
         a.addEventListener('click', restoreTab);
+        a.addEventListener('mousemove', (ev) => showPreview(ev, tab));
+        a.addEventListener('mouseleave', hidePreview);
 
-        li.append(dragHandle, a);
+        li.append(favicon, a);
         ul.append(li);
       });
 
     groupDiv.append(header, ul);
     container.append(groupDiv);
 
-    if (!group.locked) {
-      makeSortable(ul);
-    }
+    // Drag-and-drop removed per requirements
   });
 }
 
-function makeSortable(list) {
-  list.addEventListener('dragstart', (e) => {
-    const item = e.target.closest('.tab-item');
-    if (item) {
-      item.classList.add('dragging');
-      e.dataTransfer.effectAllowed = 'move';
-      try { e.dataTransfer.setData('text/plain', ''); } catch (_) {}
-    }
-  });
-
-  list.addEventListener('dragend', (e) => {
-    const item = e.target.closest('.tab-item');
-    if (item) {
-      item.classList.remove('dragging');
-      saveOrder(list.dataset.groupId);
-    }
-  });
-
-  list.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    const dragging = list.querySelector('.dragging');
-    if (!dragging) return;
-    const afterElement = getDragAfterElement(list, e.clientY);
-    if (afterElement === null) {
-      list.appendChild(dragging);
-    } else {
-      list.insertBefore(dragging, afterElement);
-    }
-  });
-}
-
-function getDragAfterElement(list, y) {
-  const draggableElements = [...list.querySelectorAll('.tab-item:not(.dragging)')];
-  return draggableElements.reduce((closest, child) => {
-    const box = child.getBoundingClientRect();
-    const offset = y - box.top - box.height / 2;
-    if (offset < 0 && offset > closest.offset) {
-      return { offset, element: child };
-    }
-    return closest;
-  }, { offset: Number.NEGATIVE_INFINITY }).element;
-}
-
-async function saveOrder(groupId) {
-  const { groups } = await chrome.storage.local.get('groups');
-  const group = groups.find(g => g.id == groupId);
-  if (group) {
-    const newTabs = Array.from(document.querySelector(`.tab-list[data-group-id="${groupId}"] .tab-item`))
-      .map(li => ({
-        title: li.querySelector('a').textContent,
-        url: li.dataset.url
-      }));
-    group.tabs = newTabs;
-    await chrome.storage.local.set({ groups });
-  }
-}
+// Drag-and-drop code removed
 
 async function restoreTab(e) {
   e.preventDefault();
@@ -285,4 +235,50 @@ function parseImportText(text) {
     const tabs = lines.slice(1).filter(url => url.trim()).map(url => ({ title: url, url }));
     return { id: Date.now() + index, name, tabs, locked: false, starred: false };
   });
+}
+
+// Hover preview implementation (non-screenshot fallback)
+let previewEl;
+function showPreview(ev, tab) {
+  if (!previewEl) {
+    previewEl = document.createElement('div');
+    previewEl.className = 'preview-card';
+    document.body.appendChild(previewEl);
+  }
+  const url = tab.url;
+  let hostname = '';
+  try { hostname = new URL(url).hostname; } catch (_) {}
+  const fav = (() => {
+    try { const u = new URL(url); return `https://www.google.com/s2/favicons?domain=${u.hostname}&sz=64`; } catch (_) { return `https://www.google.com/s2/favicons?domain=${url}&sz=64`; }
+  })();
+  previewEl.innerHTML = `
+    <div class="preview-row">
+      <img class="preview-favicon" src="${fav}" alt="">
+      <div>
+        <div class="preview-title">${escapeHtml(tab.title || url)}</div>
+        <div class="preview-domain">${hostname}</div>
+      </div>
+    </div>
+  `;
+  const pad = 16;
+  const x = Math.min(window.innerWidth - previewEl.offsetWidth - pad, ev.clientX + 18);
+  const y = Math.min(window.innerHeight - previewEl.offsetHeight - pad, ev.clientY + 18);
+  previewEl.style.left = `${Math.max(pad, x)}px`;
+  previewEl.style.top = `${Math.max(pad, y)}px`;
+}
+
+function hidePreview() {
+  if (previewEl && previewEl.parentNode) {
+    previewEl.parentNode.removeChild(previewEl);
+    previewEl = null;
+  }
+}
+
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }

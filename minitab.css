@@ -28,6 +28,12 @@ header {
   gap: 10px;
 }
 
+.logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+}
+
 h1 {
   font-size: 2em;
   font-weight: 700;
@@ -124,6 +130,13 @@ body.dark .tab-item:hover, body.auto .tab-item:hover {
   text-decoration: none;
 }
 
+.tab-favicon {
+  width: 16px;
+  height: 16px;
+  margin-right: 10px;
+  border-radius: 2px;
+}
+
 .drag-handle {
   cursor: grab;
   margin-right: 10px;
@@ -163,4 +176,51 @@ body.dark #settings-modal, body.auto #settings-modal {
 
 #settings-modal select {
   margin-left: 10px;
+}
+
+/* Hover preview */
+.preview-card {
+  position: fixed;
+  pointer-events: none;
+  background: #fff;
+  color: #000;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+  padding: 10px;
+  width: 320px;
+  max-width: 80vw;
+  z-index: 2000;
+}
+
+body.dark .preview-card, body.auto .preview-card {
+  background: #1e1e1e;
+  color: #fff;
+  border-color: #333;
+}
+
+.preview-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 6px 0;
+}
+
+.preview-domain {
+  font-size: 12px;
+  color: #666;
+}
+
+body.dark .preview-domain, body.auto .preview-domain {
+  color: #aaa;
+}
+
+.preview-row {
+  display: flex;
+  gap: 10px;
+}
+
+.preview-favicon {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
 }

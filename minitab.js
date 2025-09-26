@@ -18,6 +18,8 @@ async function initTheme() {
 
 async function loadGroups(filter = '') {
   const { groups = [] } = await chrome.storage.local.get('groups');
+  // Show most recent first
+  groups.sort((a, b) => (b.id || 0) - (a.id || 0));
   const container = document.getElementById('groups');
   container.innerHTML = '';
   const welcome = document.getElementById('welcome');

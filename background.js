@@ -53,8 +53,10 @@ async function collectTabs() {
     }
   }
 
-  // Close collected tabs AFTER opening MiniTab, so the window remains
-  const tabIds = tabs.map(tab => tab.id).filter(id => id !== undefined);
+  // Close collected tabs AFTER opening MiniTab, ensuring we do NOT close the MiniTab tab
+  const tabIds = tabs
+    .map(tab => tab.id)
+    .filter(id => id !== undefined && (!targetTab || id !== targetTab.id));
   if (tabIds.length) {
     await chrome.tabs.remove(tabIds);
   }

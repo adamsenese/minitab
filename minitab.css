@@ -296,3 +296,20 @@ body.dark .preview-domain, body.auto .preview-domain {
   height: 32px;
   border-radius: 4px;
 }
+
+/* Footer */
+.footer {
+  margin-top: 30px;
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+.footer a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.footer a:hover,
+.footer:hover {
+  opacity: 1;
+}

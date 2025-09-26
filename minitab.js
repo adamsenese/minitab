@@ -96,13 +96,20 @@ async function loadGroups(filter = '') {
         a.addEventListener('mousemove', (ev) => showPreview(ev, tab));
         a.addEventListener('mouseleave', hidePreview);
 
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'tab-copy';
+        copyBtn.setAttribute('aria-label', 'Copy link');
+        copyBtn.title = 'Copy link';
+        copyBtn.textContent = '⎘';
+        copyBtn.addEventListener('click', (e) => copyLink(e, tab.url));
+
         const del = document.createElement('button');
         del.className = 'tab-delete';
         del.setAttribute('aria-label', 'Delete saved tab');
         del.textContent = '×';
         del.addEventListener('click', (e) => deleteTab(e, group.id, index));
 
-        li.append(favicon, a, del);
+        li.append(favicon, a, copyBtn, del);
         ul.append(li);
       });
 
@@ -300,4 +307,22 @@ function escapeHtml(s) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
+}
+
+async function copyLink(e, url) {
+  e.stopPropagation();
+  e.preventDefault();
+  try {
+    await navigator.clipboard.writeText(url);
+  } catch (_) {
+    const ta = document.createElement('textarea');
+    ta.value = url;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try { document.execCommand('copy'); } catch (_) {}
+    document.body.removeChild(ta);
+  }
 }

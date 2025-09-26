@@ -171,6 +171,37 @@ body.dark .tab-delete:hover, body.auto .tab-delete:hover {
   background: rgba(255,255,255,0.08);
 }
 
+.tab-copy {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.15s ease-in-out;
+  background: transparent;
+  border: none;
+  color: #999;
+  font-size: 14px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  margin-right: 6px;
+}
+
+.tab-item:hover .tab-copy {
+  visibility: visible;
+  opacity: 1;
+}
+
+.tab-copy:hover {
+  background: rgba(0,0,0,0.06);
+  color: #333;
+}
+
+body.dark .tab-copy:hover, body.auto .tab-copy:hover {
+  background: rgba(255,255,255,0.08);
+}
+
 .tab-favicon {
   width: 16px;
   height: 16px;

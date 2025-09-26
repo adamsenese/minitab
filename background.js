@@ -30,21 +30,32 @@ async function collectTabs() {
   groups.push(newGroup);
   await chrome.storage.local.set({ groups });
 
-  // Close collected tabs
+  // Ensure MiniTab opens in the SAME window
+  const currentWindowId = tabs[0] ? tabs[0].windowId : undefined;
+  const url = chrome.runtime.getURL('minitab.html');
+  let targetTab;
+  if (currentWindowId != null) {
+    const existingInWindow = await chrome.tabs.query({ windowId: currentWindowId, url });
+    if (existingInWindow.length > 0) {
+      targetTab = existingInWindow[0];
+    } else {
+      targetTab = await chrome.tabs.create({ windowId: currentWindowId, url, active: true });
+    }
+    if (targetTab && targetTab.id != null) {
+      await chrome.tabs.update(targetTab.id, { active: true });
+    }
+    await chrome.windows.update(currentWindowId, { focused: true });
+  } else {
+    // Fallback if we somehow can't detect the window
+    targetTab = await chrome.tabs.create({ url, active: true });
+    if (targetTab && targetTab.windowId != null) {
+      await chrome.windows.update(targetTab.windowId, { focused: true });
+    }
+  }
+
+  // Close collected tabs AFTER opening MiniTab, so the window remains
   const tabIds = tabs.map(tab => tab.id).filter(id => id !== undefined);
   if (tabIds.length) {
     await chrome.tabs.remove(tabIds);
-  }
-
-  // Open or focus MiniTab page
-  const url = chrome.runtime.getURL('minitab.html');
-  const existingTabs = await chrome.tabs.query({ url });
-  if (existingTabs.length > 0) {
-    if (existingTabs[0].id != null) {
-      await chrome.tabs.update(existingTabs[0].id, { active: true });
-      await chrome.windows.update(existingTabs[0].windowId, { focused: true });
-    }
-  } else {
-    await chrome.tabs.create({ url });
   }
 }

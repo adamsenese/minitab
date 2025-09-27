@@ -99,13 +99,14 @@ async function loadGroups(filter = '') {
         const copyBtn = document.createElement('button');
         copyBtn.className = 'tab-copy';
         copyBtn.setAttribute('aria-label', 'Copy link');
-        copyBtn.title = 'Copy link';
+        copyBtn.title = 'Copy link to clipboard';
         copyBtn.textContent = '⎘';
         copyBtn.addEventListener('click', (e) => copyLink(e, tab.url));
 
         const del = document.createElement('button');
         del.className = 'tab-delete';
         del.setAttribute('aria-label', 'Delete saved tab');
+        del.title = 'Remove from MiniTab';
         del.textContent = '×';
         del.addEventListener('click', (e) => deleteTab(e, group.id, index));
 

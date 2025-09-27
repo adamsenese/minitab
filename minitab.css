@@ -165,7 +165,7 @@ body.dark .tab-item:hover, body.auto .tab-item:hover {
 
 .tab-delete:hover {
   background: rgba(0,0,0,0.06);
-  color: #d11;
+  color: inherit;
 }
 
 body.dark .tab-delete:hover, body.auto .tab-delete:hover {
@@ -196,7 +196,7 @@ body.dark .tab-delete:hover, body.auto .tab-delete:hover {
 
 .tab-copy:hover {
   background: rgba(0,0,0,0.06);
-  color: #333;
+  color: inherit;
 }
 
 body.dark .tab-copy:hover, body.auto .tab-copy:hover {

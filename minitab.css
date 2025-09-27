@@ -148,7 +148,7 @@ body.dark .tab-item:hover, body.auto .tab-item:hover {
   transition: opacity 0.15s ease-in-out;
   background: transparent;
   border: none;
-  color: #999;
+  color: #666;
   font-size: 16px;
   width: 24px;
   height: 24px;
@@ -169,7 +169,7 @@ body.dark .tab-item:hover, body.auto .tab-item:hover {
 }
 
 body.dark .tab-delete:hover, body.auto .tab-delete:hover {
-  background: rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.14);
 }
 
 .tab-copy {
@@ -178,7 +178,7 @@ body.dark .tab-delete:hover, body.auto .tab-delete:hover {
   transition: opacity 0.15s ease-in-out;
   background: transparent;
   border: none;
-  color: #999;
+  color: #666;
   font-size: 14px;
   width: 24px;
   height: 24px;
@@ -200,7 +200,41 @@ body.dark .tab-delete:hover, body.auto .tab-delete:hover {
 }
 
 body.dark .tab-copy:hover, body.auto .tab-copy:hover {
-  background: rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.14);
+}
+
+/* Improve icon contrast in dark mode while keeping hover subtle */
+body.dark .tab-copy,
+body.dark .tab-delete,
+body.auto .tab-copy,
+body.auto .tab-delete {
+  color: #bbb;
+}
+
+.tab-copy:hover,
+.tab-delete:hover {
+  color: #222;
+}
+
+body.dark .tab-copy:hover,
+body.dark .tab-delete:hover,
+body.auto .tab-copy:hover,
+body.auto .tab-delete:hover {
+  color: #fff;
+}
+
+/* Keyboard accessibility */
+.tab-copy:focus-visible,
+.tab-delete:focus-visible {
+  outline: 2px solid rgba(0,0,0,0.3);
+  outline-offset: 2px;
+}
+
+body.dark .tab-copy:focus-visible,
+body.dark .tab-delete:focus-visible,
+body.auto .tab-copy:focus-visible,
+body.auto .tab-delete:focus-visible {
+  outline: 2px solid rgba(255,255,255,0.4);
 }
 
 .tab-favicon {

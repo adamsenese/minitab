@@ -4,7 +4,7 @@ body {
   padding: 20px;
   background: #ffffff;
   color: #000000;
-  min-width: 600px;
+  min-width: 320px;
   font-size: 16px;
   line-height: 1.5;
 }
@@ -135,6 +135,7 @@ body.dark .tab-item:hover, body.auto .tab-item:hover {
   text-decoration: none;
   opacity: 0.7;
   transition: opacity 0.15s ease-in-out;
+  overflow-wrap: anywhere;
 }
 
 .tab-item:hover a {
@@ -261,7 +262,7 @@ body.dark #settings-modal, body.auto #settings-modal {
   box-shadow: 0 6px 18px rgba(0,0,0,0.2);
   padding: 10px;
   width: 320px;
-  max-width: 80vw;
+  max-width: 92vw;
   z-index: 2000;
 }
 
@@ -312,4 +313,31 @@ body.dark .preview-domain, body.auto .preview-domain {
 .footer a:hover,
 .footer:hover {
   opacity: 1;
+}
+
+/* Tablet responsiveness */
+@media (max-width: 900px) {
+  body { font-size: 15px; }
+  header { flex-wrap: wrap; gap: 8px; }
+  .logo { width: 28px; height: 28px; }
+  h1 { font-size: 1.6em; }
+  #search { flex: 1 1 100%; }
+  button { padding: 6px 10px; }
+  .group { padding: 10px; }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+  body { padding: 12px; font-size: 14px; }
+  header { gap: 6px; }
+  .logo { width: 24px; height: 24px; }
+  h1 { font-size: 1.4em; }
+  #search { flex: 1 1 100%; width: 100%; }
+  .group { padding: 8px; }
+  .group-header { gap: 6px; }
+  .tab-item { padding: 8px; }
+  .tab-favicon { width: 14px; height: 14px; margin-right: 8px; }
+  .tab-delete, .tab-copy { width: 22px; height: 22px; font-size: 14px; }
+  .preview-card { width: auto; max-width: 92vw; }
+  .footer { margin-top: 20px; font-size: 11px; text-align: center; }
 }

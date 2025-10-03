@@ -77,6 +77,7 @@ async function loadGroups(filter = '') {
         li.className = 'tab-item';
         li.dataset.url = tab.url;
         li.setAttribute('role', 'listitem');
+        const originalIndex = group.tabs.indexOf(tab);
 
         const favicon = document.createElement('img');
         favicon.className = 'tab-favicon';
@@ -92,7 +93,7 @@ async function loadGroups(filter = '') {
         const a = document.createElement('a');
         a.href = tab.url;
         a.textContent = tab.title || tab.url;
-        a.addEventListener('click', restoreTab);
+        a.addEventListener('click', (e) => restoreTab(e, group.id, originalIndex));
         a.addEventListener('mousemove', (ev) => showPreview(ev, tab));
         a.addEventListener('mouseleave', hidePreview);
 
@@ -108,7 +109,7 @@ async function loadGroups(filter = '') {
         del.setAttribute('aria-label', 'Delete saved tab');
         del.title = 'Remove from MiniTab';
         del.textContent = '×';
-        del.addEventListener('click', (e) => deleteTab(e, group.id, index));
+        del.addEventListener('click', (e) => deleteTab(e, group.id, originalIndex));
 
         li.append(favicon, a, copyBtn, del);
         ul.append(li);
@@ -123,10 +124,19 @@ async function loadGroups(filter = '') {
 
 // Drag-and-drop code removed
 
-async function restoreTab(e) {
+async function restoreTab(e, groupId, tabIndex) {
   e.preventDefault();
   const url = e.target.href;
   await chrome.tabs.create({ url });
+
+  // Remove the reopened tab from storage to prevent duplicates
+  const { groups = [] } = await chrome.storage.local.get('groups');
+  const group = groups.find(g => g.id == groupId);
+  if (group && typeof tabIndex === 'number' && tabIndex >= 0 && tabIndex < group.tabs.length) {
+    group.tabs.splice(tabIndex, 1);
+    await chrome.storage.local.set({ groups });
+    await loadGroups(document.getElementById('search').value.toLowerCase());
+  }
 }
 
 async function restoreGroup(e) {
@@ -137,6 +147,10 @@ async function restoreGroup(e) {
     for (const tab of group.tabs) {
       await chrome.tabs.create({ url: tab.url });
     }
+    // After restoring all, remove the group to avoid duplicate links
+    const updatedGroups = groups.filter(g => g.id != groupId);
+    await chrome.storage.local.set({ groups: updatedGroups });
+    await loadGroups(document.getElementById('search').value.toLowerCase());
   }
 }
 
